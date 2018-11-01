@@ -35,11 +35,8 @@ namespace VideoStore
 
             while (rentals.MoveNext())
             {
-                double thisAmount = 0;
                 Rental each = rentals.Current;
 
-                thisAmount = AmountFor(each);
-                
                 //포인트(frequent, renter oints)추가
                 frequentRenterPoint++;
                 //최신(new release)을 이틀 이상 대여하는 경우 추가 포이늩 제공
@@ -47,36 +44,13 @@ namespace VideoStore
                     frequentRenterPoint++;
 
                 //이 대여에 대한 요금 계산 결과 표시
-                result += $"\t{each.Movie.Title}\t{thisAmount}\n";
-                totalAmount += thisAmount;
+                result += $"\t{each.Movie.Title}\t{each.GetCharge()}\n";
+                totalAmount += each.GetCharge();
             }
 
             // 풋터(footer)추가
             result += $"Amount owed is {totalAmount}\n";
             result += $"You earned {frequentRenterPoint} frequent reter points";
-            return result;
-        }
-
-        private double AmountFor(Rental aRental)
-        {
-            double result = 0;
-            switch (aRental.Movie.PriceCode)
-            {
-                case Movie.REGULAR:
-                    result += 2;
-                    if (aRental.DaysRented > 2)
-                        result += (aRental.DaysRented - 2) * 1.5;
-                    break;
-                case Movie.NEW_RELEASE:
-                    result += aRental.DaysRented * 3;
-                    break;
-                case Movie.CHILDREN:
-                    result += 1.5;
-                    if (aRental.DaysRented > 3)
-                        result += (aRental.DaysRented - 3) * 1.5;
-                    break;
-            }
-
             return result;
         }
     }
