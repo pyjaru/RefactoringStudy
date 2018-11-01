@@ -29,7 +29,7 @@ namespace VideoStore
         public string Statement()
         {
             var rentals = _rentals.GetEnumerator();
-            string result = $"Rental Record for {this.Name}\n";
+            string result = $"Rental Record for {Name}\n";
 
             while (rentals.MoveNext())
             {
@@ -48,7 +48,7 @@ namespace VideoStore
         public String HtmlStatement()
         {
             var rentals = _rentals.GetEnumerator();
-            string result = $"<H1>Rental for <EM>{this.Name}</EM></H1><P>\n";
+            string result = $"<H1>Rental for <EM>{Name}</EM></H1><P>\n";
 
             while (rentals.MoveNext())
             {
