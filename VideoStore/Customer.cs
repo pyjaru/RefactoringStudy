@@ -28,44 +28,64 @@ namespace VideoStore
 
         public string Statement()
         {
-            double totalAmount = 0;
-            int frequentRenterPoint = 0;
-            string result = $"Rental Record for {this.Name}\n";
-            foreach(var rental in _rentals)
+            var rentals = _rentals.GetEnumerator();
+            string result = $"Rental Record for {Name}\n";
+
+            while (rentals.MoveNext())
             {
-                double thisAmount = 0;
-                switch (rental.Movie.PriceCode)
-                {
-                    case Movie.REGULAR:
-                        thisAmount += 2;
-                        if (rental.DaysRented > 2)
-                            thisAmount += (rental.DaysRented - 2) * 1.5;
-                        break;
-                    case Movie.NEW_RELEASE:
-                        thisAmount += rental.DaysRented * 3;
-                        break;
-                    case Movie.CHILDREN:
-                        thisAmount += 1.5;
-                        if (rental.DaysRented > 3)
-                            thisAmount += (rental.DaysRented - 3) * 1.5;
-                        break;
-                }
-
-                //포인트(frequent, renter oints)추가
-                frequentRenterPoint++;
-                //최신(new release)을 이틀 이상 대여하는 경우 추가 포이늩 제공
-                if ((rental.Movie.PriceCode == Movie.NEW_RELEASE) && (rental.DaysRented > 1))
-                    frequentRenterPoint++;
-
+                Rental each = rentals.Current;
+                
                 //이 대여에 대한 요금 계산 결과 표시
-                result += $"\t{rental.Movie.Title}\t{thisAmount}\n";
-                totalAmount += thisAmount;
+                result += $"\t{each.Movie.Title}\t{each.GetCharge()}\n";
             }
+
             // 풋터(footer)추가
-            result += $"Amount owed is {totalAmount}\n";
-            result += $"You earned {frequentRenterPoint} frequent reter points";
+            result += $"Amount owed is {GetTotalCharge()}\n";
+            result += $"You earned {GetTotalFrequentRenterPoints()  } frequent reter points";
             return result;
         }
 
+        public String HtmlStatement()
+        {
+            var rentals = _rentals.GetEnumerator();
+            string result = $"<H1>Rental for <EM>{Name}</EM></H1><P>\n";
+
+            while (rentals.MoveNext())
+            {
+                Rental each = rentals.Current;
+
+                //이 대여에 대한 요금 계산 결과 표시
+                result += $"{each.Movie.Title}: {each.GetCharge()}<BR>\n";
+            }
+
+            // 풋터(footer)추가
+            result += $"<P>You owe <EM>{GetTotalCharge()}</EM><P>\n";
+            result += $"On this rental you earned <EM>{GetTotalFrequentRenterPoints()}</EM> frequent reter points<P>";
+            return result;
+        }
+
+        private double GetTotalCharge()
+        {
+            double result = 0;
+            var rentals = _rentals.GetEnumerator();
+            while (rentals.MoveNext())
+            {
+                Rental each = rentals.Current;
+                result += each.GetCharge();
+            }
+            return result;
+        }
+
+        private int GetTotalFrequentRenterPoints()
+        {
+            int result = 0;
+            var rentals = _rentals.GetEnumerator();
+            while (rentals.MoveNext())
+            {
+                Rental each = rentals.Current;
+                result += each.GetFrequentRenterPoints();
+            }
+            return result;
+        }
     }
 }
