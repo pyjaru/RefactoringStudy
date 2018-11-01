@@ -28,24 +28,44 @@ namespace VideoStore
 
         public string Statement()
         {
-            double totalAmount = 0;
-            int frequentRenterPoints = 0;
             var rentals = _rentals.GetEnumerator();
             string result = $"Rental Record for {this.Name}\n";
 
             while (rentals.MoveNext())
             {
                 Rental each = rentals.Current;
-                frequentRenterPoints += each.GetFrequentRenterPoints();
-
+                
                 //이 대여에 대한 요금 계산 결과 표시
                 result += $"\t{each.Movie.Title}\t{each.GetCharge()}\n";
-                totalAmount += each.GetCharge();
             }
 
             // 풋터(footer)추가
-            result += $"Amount owed is {totalAmount}\n";
-            result += $"You earned {frequentRenterPoints} frequent reter points";
+            result += $"Amount owed is {GetTotalCharge()}\n";
+            result += $"You earned {GetTotalFrequentRenterPoints()  } frequent reter points";
+            return result;
+        }
+
+        private double GetTotalCharge()
+        {
+            double result = 0;
+            var rentals = _rentals.GetEnumerator();
+            while (rentals.MoveNext())
+            {
+                Rental each = rentals.Current;
+                result += each.GetCharge();
+            }
+            return result;
+        }
+
+        private int GetTotalFrequentRenterPoints()
+        {
+            int result = 0;
+            var rentals = _rentals.GetEnumerator();
+            while (rentals.MoveNext())
+            {
+                Rental each = rentals.Current;
+                result += each.GetFrequentRenterPoints();
+            }
             return result;
         }
     }
