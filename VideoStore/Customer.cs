@@ -34,12 +34,9 @@ namespace VideoStore
             while (rentals.MoveNext())
             {
                 Rental each = rentals.Current;
-                
-                //이 대여에 대한 요금 계산 결과 표시
                 result += $"\t{each.Movie.Title}\t{each.GetCharge()}\n";
             }
 
-            // 풋터(footer)추가
             result += $"Amount owed is {GetTotalCharge()}\n";
             result += $"You earned {GetTotalFrequentRenterPoints()  } frequent reter points";
             return result;
@@ -53,12 +50,9 @@ namespace VideoStore
             while (rentals.MoveNext())
             {
                 Rental each = rentals.Current;
-
-                //이 대여에 대한 요금 계산 결과 표시
                 result += $"{each.Movie.Title}: {each.GetCharge()}<BR>\n";
             }
 
-            // 풋터(footer)추가
             result += $"<P>You owe <EM>{GetTotalCharge()}</EM><P>\n";
             result += $"On this rental you earned <EM>{GetTotalFrequentRenterPoints()}</EM> frequent reter points<P>";
             return result;
